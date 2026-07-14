@@ -7,7 +7,7 @@
 <meta name="description" content="Od. Carhil Reyes · Odontología restauradora y estética · San Cristóbal y Mérida, Venezuela." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Archivo:wdth,wght@75..125,400..800&family=Press+Start+2P&display=swap" rel="stylesheet" />
 <style>
   :root {
     --bg: #0b0709;
@@ -283,8 +283,89 @@
     to   { opacity: 1; transform: rotate(var(--r)) scale(1); }
   }
 
+  /* ————— pixel mascot ————— */
+  .mascota {
+    position: fixed;
+    bottom: 2px;
+    left: 0;
+    z-index: 5;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .mascota__sprite {
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    background-position: 0 bottom;
+    transform-origin: 50% 100%;
+  }
+  /* walking: 4-frame sheet */
+  .mascota__sprite.is-walking {
+    width: 47px;
+    height: 96px;
+    background-image: url("assets/sprites/walk-sheet.png");
+    background-size: 400% 100%;
+    animation: walkcycle 0.55s steps(4) infinite;
+  }
+  .mascota__sprite.is-walking.face-left { transform: scaleX(-1); }
+  @keyframes walkcycle {
+    from { background-position: 0% bottom; }
+    to   { background-position: 400% bottom; }
+  }
+  /* poses */
+  .mascota__sprite.is-idle,
+  .mascota__sprite.is-sparkle {
+    width: 42px; height: 96px;
+    background-size: contain;
+    background-position: center bottom;
+  }
+  .mascota__sprite.is-wave {
+    width: 54px; height: 96px;
+    background-size: contain;
+    background-position: center bottom;
+  }
+  .mascota__sprite.is-idle    { background-image: url("assets/sprites/idle.png"); }
+  .mascota__sprite.is-wave    { background-image: url("assets/sprites/wave.png"); }
+  .mascota__sprite.is-sparkle { background-image: url("assets/sprites/sparkle-smile.png"); }
+
+  .mascota__bubble {
+    position: absolute;
+    bottom: 34px;
+    left: calc(100% + 12px);
+    width: max-content;
+    max-width: 190px;
+    background: #fffdf7;
+    color: #241028;
+    border: 3px solid #241028;
+    padding: 9px 11px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 8px;
+    line-height: 1.7;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+    display: none;
+  }
+  .mascota__bubble::after {
+    content: "";
+    position: absolute;
+    bottom: 12px;
+    left: -8px;
+    width: 11px; height: 11px;
+    background: #fffdf7;
+    border-left: 3px solid #241028;
+    border-bottom: 3px solid #241028;
+    transform: rotate(45deg);
+  }
+  .mascota__bubble.is-visible { display: block; }
+  .mascota__bubble.align-right { left: auto; right: calc(100% + 12px); }
+  .mascota__bubble.align-right::after {
+    left: auto; right: -8px;
+    border-left: none; border-bottom: none;
+    border-right: 3px solid #241028;
+    border-top: 3px solid #241028;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
+    .mascota { display: none; }
   }
 </style>
 </head>
@@ -335,6 +416,97 @@
   <footer>Agape Dental · Venezuela</footer>
 
 </main>
+
+<div class="mascota" id="mascota" aria-hidden="true">
+  <div class="mascota__bubble" id="bubble"></div>
+  <div class="mascota__sprite is-idle" id="sprite"></div>
+</div>
+
+<script>
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var FRASES = [
+    "¿Ya te cepillaste hoy? 👀",
+    "Escríbeme al WhatsApp y agenda tu cita 🦷",
+    "El hilo dental no es opcional 😌",
+    "¿Cafecito otra vez? Nos vemos pronto…",
+    "Sonríe, que es gratis ✨"
+  ];
+
+  var mascota = document.getElementById("mascota");
+  var sprite = document.getElementById("sprite");
+  var bubble = document.getElementById("bubble");
+  var SPEED = 55;            // px per second
+  var W = 47;                // walking sprite width
+  var x = -60;               // start just off-screen left
+  var lastPhrase = -1;
+
+  function setPose(cls) {
+    sprite.className = "mascota__sprite " + cls;
+  }
+  function maxX() { return Math.min(window.innerWidth, 430 + (window.innerWidth - 430) / 2) - W - 10; }
+  function minX() { return Math.max(10, (window.innerWidth - 430) / 2); }
+
+  function walkTo(target, done) {
+    var dist = Math.abs(target - x);
+    if (dist < 30) { done(); return; }
+    setPose("is-walking" + (target < x ? " face-left" : ""));
+    mascota.style.transition = "transform " + (dist / SPEED) + "s linear";
+    mascota.style.transform = "translateX(" + target + "px)";
+    var fired = false;
+    var onEnd = function () {
+      if (fired) return;
+      fired = true;
+      mascota.removeEventListener("transitionend", onEnd);
+      x = target;
+      done();
+    };
+    mascota.addEventListener("transitionend", onEnd);
+    setTimeout(onEnd, dist / SPEED * 1000 + 250); // fallback if event is missed
+  }
+
+  function showBubble() {
+    var i;
+    do { i = Math.floor(Math.random() * FRASES.length); } while (i === lastPhrase);
+    lastPhrase = i;
+    bubble.textContent = FRASES[i];
+    bubble.className = "mascota__bubble is-visible" +
+      (x > window.innerWidth / 2 ? " align-right" : "");
+  }
+  function hideBubble() { bubble.className = "mascota__bubble"; }
+
+  function act(done) {
+    var roll = Math.random();
+    if (roll < 0.34) {
+      setPose("is-wave");
+      setTimeout(done, 2200);
+    } else if (roll < 0.62) {
+      setPose("is-sparkle");
+      setTimeout(done, 2200);
+    } else {
+      setPose(Math.random() < 0.5 ? "is-idle" : "is-wave");
+      showBubble();
+      setTimeout(function () { hideBubble(); done(); }, 3600);
+    }
+  }
+
+  function nextStop() {
+    var lo = minX(), hi = maxX();
+    var target;
+    do { target = lo + Math.random() * (hi - lo); } while (Math.abs(target - x) < 90);
+    walkTo(target, function () { act(nextStop); });
+  }
+
+  // preload pose images so swaps don't flicker
+  ["idle", "wave", "sparkle-smile", "walk-sheet"].forEach(function (n) {
+    (new Image()).src = "assets/sprites/" + n + ".png";
+  });
+
+  mascota.style.transform = "translateX(" + x + "px)";
+  setTimeout(nextStop, 1700); // wait for the page entrance choreography
+})();
+</script>
 
 </body>
 </html>
