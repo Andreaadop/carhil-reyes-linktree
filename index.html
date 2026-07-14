@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Od. Carhil Reyes — Agape Dental</title>
+<meta name="description" content="Od. Carhil Reyes · Odontología restauradora y estética · San Cristóbal y Mérida, Venezuela." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0709;
+    --crema: #f5efe6;
+    --crema-dim: rgba(245, 239, 230, 0.62);
+    --morado: #7e1f8e;
+    --morado-glow: rgba(126, 31, 142, 0.42);
+    --lila: #cf8fdb;
+    --verde: #75a939;
+    --verde-glow: rgba(117, 169, 57, 0.16);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--crema);
+    font-family: "Archivo", system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient brand glows — the stage lighting */
+  .glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow--morado {
+    width: 130vw; height: 60vh;
+    top: -12vh; left: 50%;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, var(--morado-glow), transparent 65%);
+    animation: drift 16s ease-in-out infinite alternate;
+  }
+  .glow--verde {
+    width: 90vw; height: 45vh;
+    bottom: -18vh; right: -25vw;
+    background: radial-gradient(ellipse at center, var(--verde-glow), transparent 65%);
+    animation: drift 16s ease-in-out -8s infinite alternate-reverse;
+  }
+  @keyframes drift {
+    from { transform: translateX(-50%) translateY(0); }
+    to   { transform: translateX(-46%) translateY(3vh); }
+  }
+  .glow--verde { animation-name: drift2; }
+  @keyframes drift2 {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(-4vw, -3vh); }
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    max-width: 430px;
+    min-height: 100svh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: max(env(safe-area-inset-top), 20px) 24px max(env(safe-area-inset-bottom), 28px);
+  }
+
+  /* ————— header ————— */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    align-self: center;
+    animation: fadeDown 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .brand__logo {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 2px rgba(245, 239, 230, 0.18);
+  }
+  .brand__name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-variation-settings: "wdth" 110;
+    color: var(--crema-dim);
+  }
+
+  /* ————— portrait, melted into the page ————— */
+  .portrait {
+    position: relative;
+    width: min(88vw, 380px);
+    margin-top: 6px;
+    animation: photoIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+    -webkit-mask-image: radial-gradient(85% 78% at 50% 42%, #000 38%, transparent 70%);
+            mask-image: radial-gradient(85% 78% at 50% 42%, #000 38%, transparent 70%);
+  }
+
+  /* location stickers — she practices in two cities */
+  .sticker {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--crema);
+    color: #241028;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  }
+  .sticker::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+  }
+  .sticker--sc {
+    left: -6px; bottom: 34%;
+    transform: rotate(-7deg);
+    animation: stickerIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s both;
+  }
+  .sticker--sc::before { background: var(--morado); }
+  .sticker--me {
+    right: -4px; bottom: 24%;
+    transform: rotate(5deg);
+    animation: stickerIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s both;
+  }
+  .sticker--me::before { background: var(--verde); }
+
+  /* ————— name lockup, overlapping the portrait ————— */
+  .lockup {
+    position: relative;
+    z-index: 2;
+    margin-top: clamp(-72px, -16vw, -48px);
+    text-align: center;
+    animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+  }
+  .lockup__eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variation-settings: "wdth" 112;
+    color: var(--lila);
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+  .lockup h1 {
+    font-family: "Fraunces", serif;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 75, "WONK" 1;
+    font-weight: 460;
+    font-size: clamp(52px, 16vw, 66px);
+    line-height: 0.94;
+    letter-spacing: -0.01em;
+    text-shadow: 0 4px 30px rgba(11, 7, 9, 0.85);
+  }
+  .lockup h1 .apellido {
+    font-style: italic;
+    font-weight: 380;
+    color: var(--lila);
+  }
+  .lockup__creds {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--crema-dim);
+    letter-spacing: 0.02em;
+  }
+  .lockup__creds strong {
+    color: var(--crema);
+    font-weight: 600;
+  }
+
+  /* ————— the two links ————— */
+  .links {
+    width: 100%;
+    max-width: 360px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 10px 10px 26px;
+    min-height: 68px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 16.5px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:focus-visible {
+    outline: 3px solid var(--crema);
+    outline-offset: 3px;
+  }
+  .btn__icon {
+    flex: none;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+  .btn--web {
+    background: var(--morado);
+    color: #fff;
+    box-shadow: 0 10px 34px rgba(126, 31, 142, 0.38);
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.65s both;
+  }
+  .btn--web .btn__icon { background: var(--crema); color: var(--morado); }
+  .btn--wa {
+    background: var(--verde);
+    color: #17230b;
+    box-shadow: 0 10px 34px rgba(117, 169, 57, 0.28);
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s both;
+  }
+  .btn--wa .btn__icon { background: #17230b; color: var(--verde); }
+
+  @media (hover: hover) {
+    .btn:hover { transform: translateY(-3px); }
+    .btn--web:hover { box-shadow: 0 16px 40px rgba(126, 31, 142, 0.5); }
+    .btn--wa:hover { box-shadow: 0 16px 40px rgba(117, 169, 57, 0.4); }
+  }
+
+  /* ————— footer ————— */
+  footer {
+    margin-top: auto;
+    padding-top: 30px;
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(245, 239, 230, 0.38);
+    animation: fadeUp 0.8s ease 1s both;
+  }
+
+  /* ————— entrance choreography ————— */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes photoIn {
+    from { opacity: 0; transform: scale(1.05); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes stickerIn {
+    from { opacity: 0; transform: rotate(-7deg) scale(0.5); }
+    to   { opacity: 1; }
+  }
+  .sticker--sc { --r: -7deg; }
+  .sticker--me { --r: 5deg; }
+  @keyframes stickerIn {
+    from { opacity: 0; transform: rotate(var(--r)) scale(0.5); }
+    to   { opacity: 1; transform: rotate(var(--r)) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow glow--morado" aria-hidden="true"></div>
+<div class="glow glow--verde" aria-hidden="true"></div>
+
+<main class="card">
+
+  <div class="brand">
+    <img class="brand__logo" src="assets/logo.jpg" alt="" width="34" height="34" />
+    <span class="brand__name">Agape Dental</span>
+  </div>
+
+  <figure class="portrait">
+    <img src="assets/carhil-reyes-1.jpeg" alt="Od. Carhil Reyes, odontóloga" width="1080" height="1350" />
+    <span class="sticker sticker--sc">San Cristóbal</span>
+    <span class="sticker sticker--me">Mérida</span>
+  </figure>
+
+  <header class="lockup">
+    <p class="lockup__eyebrow">Odontología restauradora &amp; estética</p>
+    <h1>Carhil <span class="apellido">Reyes</span></h1>
+    <p class="lockup__creds">
+      <strong>Odontóloga</strong> · LUZ<br />
+      MSc. Odontología Restauradora y Estética · ULA
+    </p>
+  </header>
+
+  <nav class="links" aria-label="Enlaces">
+    <!-- TODO: reemplazar href con el link real del sitio web -->
+    <a class="btn btn--web" href="#">
+      Visita mi sitio web
+      <span class="btn__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+    <!-- TODO: reemplazar href con wa.me/<numero> -->
+    <a class="btn btn--wa" href="#">
+      Escríbeme por WhatsApp
+      <span class="btn__icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.94L2 22l5.2-1.5A9.9 9.9 0 1 0 12.04 2Zm5.77 14.06c-.24.68-1.4 1.3-1.94 1.38-.5.07-1.12.1-1.8-.11a16 16 0 0 1-1.64-.6c-2.88-1.25-4.76-4.15-4.9-4.34-.15-.2-1.18-1.57-1.18-3s.74-2.13 1-2.42c.27-.3.58-.37.77-.37h.55c.18 0 .42-.06.65.5.24.57.8 1.97.87 2.11.07.15.12.32.02.51-.1.2-.14.31-.29.48-.14.17-.3.38-.44.51-.14.15-.3.3-.13.6.17.29.75 1.24 1.6 2.01 1.11.99 2.04 1.3 2.33 1.44.29.15.46.13.63-.07.17-.2.72-.84.92-1.13.19-.29.39-.24.65-.14.27.1 1.7.8 2 .95.29.14.48.22.55.34.07.12.07.7-.17 1.35Z"/></svg>
+      </span>
+    </a>
+  </nav>
+
+  <footer>Agape Dental · Venezuela</footer>
+
+</main>
+
+</body>
+</html>
