@@ -307,9 +307,10 @@
     animation: walkcycle 0.55s steps(4) infinite;
   }
   .mascota__sprite.is-walking.face-left { transform: scaleX(-1); }
+  /* 4 cells: steps land on 0 / 33.33 / 66.66 / 100% of background-position */
   @keyframes walkcycle {
     from { background-position: 0% bottom; }
-    to   { background-position: 400% bottom; }
+    to   { background-position: 133.3333% bottom; }
   }
   /* poses */
   .mascota__sprite.is-idle,
